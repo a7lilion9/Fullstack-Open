@@ -1,11 +1,15 @@
 import { useState } from 'react'
 
-
 const Statistics = ({good, neutral, bad}) => {
   const all = good + neutral + bad
   const avg = (good - bad) / all
   const positive = good / all * 100
 
+  if (all === 0) {
+    return (
+      <p>No feedback given</p>
+    )
+  }
   return (
     <div>
       <h2>statistics</h2>
