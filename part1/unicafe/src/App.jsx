@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+
 const Statistics = ({good, neutral, bad}) => {
   const all = good + neutral + bad
   const avg = (good - bad) / all
