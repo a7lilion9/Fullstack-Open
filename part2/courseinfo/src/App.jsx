@@ -69,10 +69,7 @@ const Part = ({part}) => {
 }
 
 const Total = ({parts}) => {
-  let total = 0
-  const exercises = parts.map(part => part.exercises)
-
-  exercises.forEach(e => total += e)
+  const total = parts.reduce((result, part) => result + part.exercises, 0)
 
   return (
     <div>
