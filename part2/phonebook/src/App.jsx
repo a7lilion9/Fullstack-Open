@@ -1,5 +1,37 @@
 import { useState } from 'react'
 
+const Filter = ({value, handleFunction}) => {
+  return (
+    <p>filter shown with <input value={value} onChange={handleFunction} /></p>
+  )
+}
+
+const PersonForm = ({handleSubmit, nameValue, phoneValue, handleName, handlePhone}) => {
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <div>name: <input value={nameValue} onChange={handleName} /></div>
+        <div>number: <input value={phoneValue} onChange={handlePhone} /></div>
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
+const Persons = ({persons, newSearch}) => {
+  return (
+    <ul>
+      {
+        persons
+          .filter(p => p.name.toLowerCase().startsWith(newSearch.toLowerCase()))
+          .map(p => <li key={p.name}>{p.name} {p.number}</li>)
+      }
+    </ul>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -34,7 +66,7 @@ const App = () => {
     if (isDuplicate) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons(persons.concat({name: newName, phone: newPhone}))
+      setPersons(persons.concat({name: newName, number: newPhone, id: persons.length + 1}))
     }
 
     setNewName("")
@@ -44,25 +76,17 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <p>filter shown with <input value={newSearch} onChange={handleSearchChange} /></p>
-      <h2>Add a new</h2>
-      <form onSubmit={addNewName}>
-        <div>
-          <div>name: <input value={newName} onChange={handleChange} /></div>
-          <div>number: <input value={newPhone} onChange={handlePhoneChange} /></div>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {
-          persons
-            .filter(p => p.name.toLowerCase().startsWith(newSearch.toLowerCase()))
-            .map(p => <li key={p.name}>{p.name} {p.number}</li>)
-        }
-      </ul>
+      <Filter value={newSearch} handleFunction={handleSearchChange} />
+      <h3>Add a new</h3>
+      <PersonForm 
+        handleSubmit={addNewName}
+        nameValue={newName}
+        phoneValue={newPhone}
+        handleName={handleChange}
+        handlePhone={handlePhoneChange}
+      />
+      <h3>Numbers</h3>
+      <Persons persons={persons} newSearch={newSearch} />
     </div>
   )
 }
