@@ -10,8 +10,15 @@ const create = (person) => {
   return axios.post(url, person).then(person => person.data)
 }
 
-const remove = (id) => {
-  return axios.delete(`${url}/${id}`).then(e => e)
+const remove = (id, person) => {
+  console.log('id', person.id)
+  return axios.delete(`${url}/${id}`)
 }
 
-export default {getAll, create, remove}
+const edit = (person) => {
+  console.log('id', person.id)
+  remove(person.id, person)
+  return create(person)
+}
+
+export default {getAll, create, remove, edit}

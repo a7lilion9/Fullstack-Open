@@ -63,12 +63,27 @@ const App = () => {
   const addNewName = e => {
     e.preventDefault()
 
-    const isDuplicate = persons.reduce((dup, person) => 
-      dup || person.name === newName 
-      , false)
+    let personId = null
+    const isDuplicate = persons.reduce((dup, person) => {
+      const result = dup || person.name === newName
+
+      if (result) {
+        personId = person.id
+      }
+      return result
+    }, false)
     
     if (isDuplicate) {
-      alert(`${newName} is already added to phonebook`)
+      const editPersonConfirmation = window
+        .confirm(`${newName} is already added to phonebook do you want to edit it?`)
+      
+        if (editPersonConfirmation) {
+          const newPerson = {...persons.find(p => p.name === newName), number: newPhone}
+          console.log(newPerson);
+          personServices.edit(newPerson)
+
+          setPersons(persons.filter(p => p.name !== newPerson.name).concat(newPerson))
+        }
     } else {
       const newPerson = {
         name: newName,
