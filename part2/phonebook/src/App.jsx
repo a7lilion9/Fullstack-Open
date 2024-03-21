@@ -21,13 +21,15 @@ const PersonForm = ({handleSubmit, nameValue, phoneValue, handleName, handlePhon
   )
 }
 
-const Persons = ({persons, newSearch}) => {
+const Persons = ({persons, newSearch, handleDeletion}) => {
   return (
     <ul>
       {
         persons
           .filter(p => p.name.toLowerCase().startsWith(newSearch.toLowerCase()))
-          .map(p => <li key={p.name}>{p.name} {p.number}</li>)
+          .map(p => <li key={p.name}>
+            {p.name} {p.number} <button onClick={() => handleDeletion(p.id)}>delete</button>
+          </li>)
       }
     </ul>
   )
@@ -83,6 +85,17 @@ const App = () => {
     setNewPhone("")
   }
 
+  const deletePerson = id => {
+    const currentPersonName = persons.find(p => p.id === id).name
+    const confirm = window.confirm(`Delete ${currentPersonName}?`)
+
+    if (confirm) {
+      personServices.remove(id).then(() => {
+        setPersons(persons.filter(p => p.id !== id))
+      })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -96,7 +109,11 @@ const App = () => {
         handlePhone={handlePhoneChange}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} newSearch={newSearch} />
+      <Persons
+        handleDeletion={deletePerson}
+        persons={persons}
+        newSearch={newSearch}
+      />
     </div>
   )
 }
