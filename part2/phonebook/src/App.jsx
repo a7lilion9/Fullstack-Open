@@ -28,10 +28,23 @@ const Persons = ({persons, newSearch, handleDeletion}) => {
         persons
           .filter(p => p.name.toLowerCase().startsWith(newSearch.toLowerCase()))
           .map(p => <li key={p.name}>
-            {p.name} {p.number} <button onClick={() => handleDeletion(p.id)}>delete</button>
+            {p.name} {p.number} <button onClick={() => {
+              console.log('inside react person', p);
+              return handleDeletion(p.id)
+            }}>delete</button>
           </li>)
       }
     </ul>
+  )
+}
+
+const Notification = ({message, style}) => {
+  if (!message) {
+    return null
+  }
+
+  return (
+    <div style={style}>{message}</div>
   )
 }
 
@@ -40,6 +53,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [newSearch, setNewSearch] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     personServices.getAll()
@@ -79,10 +93,13 @@ const App = () => {
       
         if (editPersonConfirmation) {
           const newPerson = {...persons.find(p => p.name === newName), number: newPhone}
-          console.log(newPerson);
           personServices.edit(newPerson)
 
           setPersons(persons.filter(p => p.name !== newPerson.name).concat(newPerson))
+          setNotification('You changed a name\'s phone number succefully.')
+          setTimeout(() => {
+            setNotification(null)
+    }, 4000)
         }
     } else {
       const newPerson = {
@@ -94,6 +111,11 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
         })
+
+        setNotification('You added a new name succefully.')
+        setTimeout(() => {
+          setNotification(null)
+        }, 4000)
     }
 
     setNewName("")
@@ -108,6 +130,11 @@ const App = () => {
       personServices.remove(id).then(() => {
         setPersons(persons.filter(p => p.id !== id))
       })
+
+      setNotification('You removed a new name succefully.')
+      setTimeout(() => {
+        setNotification(null)
+      }, 4000)
     }
   }
 
@@ -129,6 +156,7 @@ const App = () => {
         persons={persons}
         newSearch={newSearch}
       />
+      <Notification message={notification} style={{color: 'green'}} />
     </div>
   )
 }

@@ -10,8 +10,7 @@ const create = (person) => {
   return axios.post(url, person).then(person => person.data)
 }
 
-const remove = (id, person) => {
-  console.log('id', person.id)
+const remove = (id) => {
   return axios.delete(`${url}/${id}`)
 }
 
