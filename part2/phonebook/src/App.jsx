@@ -53,7 +53,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [newSearch, setNewSearch] = useState('')
-  const [notification, setNotification] = useState(null)
+  const [notification, setNotification] = useState(['', 'white'])
 
   useEffect(() => {
     personServices.getAll()
@@ -96,7 +96,7 @@ const App = () => {
           personServices.edit(newPerson)
 
           setPersons(persons.filter(p => p.name !== newPerson.name).concat(newPerson))
-          setNotification('You changed a name\'s phone number succefully.')
+          setNotification(['You changed a name\'s phone number succefully.', 'green'])
           setTimeout(() => {
             setNotification(null)
     }, 4000)
@@ -112,7 +112,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
         })
 
-        setNotification('You added a new name succefully.')
+        setNotification(['You added a new name succefully.', 'green'])
         setTimeout(() => {
           setNotification(null)
         }, 4000)
@@ -129,12 +129,16 @@ const App = () => {
     if (confirm) {
       personServices.remove(id).then(() => {
         setPersons(persons.filter(p => p.id !== id))
+        setNotification(['You removed a new name succefully.', 'green'])
+        setTimeout(() => {
+          setNotification(null)
+        }, 4000)
+      }).catch(() => {
+        setNotification(['Error, the person is no found in the server.', 'red'])
+        setTimeout(() => {
+          setNotification(null)
+        }, 4000)
       })
-
-      setNotification('You removed a new name succefully.')
-      setTimeout(() => {
-        setNotification(null)
-      }, 4000)
     }
   }
 
@@ -156,7 +160,7 @@ const App = () => {
         persons={persons}
         newSearch={newSearch}
       />
-      <Notification message={notification} style={{color: 'green'}} />
+      <Notification message={notification !== null && notification[0]} style={notification !== null && {color: notification[1]}} />
     </div>
   )
 }
